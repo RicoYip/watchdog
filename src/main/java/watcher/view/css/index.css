@@ -1,0 +1,25 @@
+.left-area{
+    background-color: #1E9FFF;
+}
+.right-area{
+    background-color: #2D93CA;
+}
+.tcp{
+    background-color: #00FF00;
+}
+.udp{
+    background-color: #0000FF;
+}
+.arp{
+    background-color: #2E2D3C;
+}
+.item-blcok:hover{
+    cursor:pointer
+}
+.echart-view ,.paket-detail{
+    height: 300px;
+}
+.packet-list{
+    overflow-y:scroll;
+    height: 300px;
+}
