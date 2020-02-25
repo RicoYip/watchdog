@@ -16,7 +16,7 @@
 .item-blcok:hover{
     cursor:pointer
 }
-.echart-view ,.paket-detail{
+.echart-view ,.paket-detail,.view-show{
     height: 300px;
 }
 .packet-list{
