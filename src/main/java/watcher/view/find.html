@@ -2,11 +2,174 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>流量分析</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/network.css">
 </head>
 <body>
-hi
+<div class="layui-fluid" id="app">
+
+    <div class="top">
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md4">
+                <label>IP地址</label>
+                <input type="text" placeholder="请输入标题" class="layui-input" v-model="conditions.dst_ip">
+            </div>
+            <div class="layui-col-md3">
+                <label>端口号</label>
+                <input type="text" placeholder="请输入标题" class="layui-input" v-model="conditions.dst_port">
+            </div>
+            <div class="layui-col-md4">
+                <label>协议</label>
+                <input type="text" placeholder="请输入标题" class="layui-input" v-model="conditions.protocol">
+            </div>
+            <div class="layui-col-md1">
+                <div style="margin-top:20px">
+                    <button type="button" class="layui-btn" @click="find()">查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="down">
+        <div class="layui-col-md4">
+            <fieldset class="layui-elem-field">
+                <legend>网卡接受数据包情况</legend>
+                <div class="layui-field-box">
+                    <div class="packet-list" style="height: 500px">
+                        <ol>
+                            <li v-for="(item,index) in list"  class="item-blcok" @click="show(index)">
+                                <div v-if="item.type == 'tcp'" :class="{tcp:item.type == 'tcp'}" >
+                                    {{item.src_ip}}:{{item.src_port}} -> {{item.dst_ip}}:{{item.dst_port}}
+                                </div>
+                                <div v-if="item.type == 'udp'" :class="{udp:item.type == 'udp'}">
+                                    {{item.src_ip}}:{{item.src_port}} -> {{item.dst_ip}}:{{item.dst_port}}
+                                </div>
+                                <div v-if="item.type == 'arp'" :class="{arp:item.type == 'arp'}">
+                                    {{item.senderHardwareAddress}} -> {{item.targetHardwareAddress}}
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="layui-col-md8">
+        <fieldset class="layui-elem-field">
+            <legend>数据包详情</legend>
+            <div class="layui-field-box">
+                <div class="paket-detail">
+                    <div class="layui-tab">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">原始数据</li>
+                            <li>链路层</li>
+                            <li>网络层</li>
+                            <li>传输层</li>
+                            <li>应用层</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">{{currentPage}}</div>
+                            <div class="layui-tab-item">
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="150">
+                                        <col width="200">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>原MAC地址</th>
+                                        <th>目的MAC地址</th>
+                                        <th>类型</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{currentPage.datalink.destinationAddress}}</td>
+                                        <td>{{currentPage.datalink.sourceAddress}}</td>
+                                        <td>{{currentPage.datalink.frametype}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="layui-tab-item">
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col>
+                                        <col>
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>版本号</th>
+                                        <th>TOS</th>
+                                        <th>总长度</th>
+                                        <th>TTL</th>
+                                        <th>协议</th>
+                                        <th>源地址</th>
+                                        <th>目的地址</th>
+                                        <th>偏移</th>
+                                        <th>选项</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{currentPage.version}}</td>
+                                        <td>{{currentPage.rsv_tos}}</td>
+                                        <td>{{currentPage.length}}</td>
+                                        <td>{{currentPage.hop_limit}}</td>
+                                        <td>{{currentPage.protocol}}</td>
+                                        <td>{{currentPage.src_ip}}</td>
+                                        <td>{{currentPage.dst_ip}}</td>
+                                        <td>{{currentPage.offset}}</td>
+                                        <td>{{currentPage.option}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table class="layui-table" v-if="raw_data.type == 'tcp'">
+                                    <thead>
+                                    <tr>
+                                        <th>源端口</th>
+                                        <th>目的端口</th>
+                                        <th>数据序号</th>
+                                        <th>确认序号</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{currentPage.src_port}}</td>
+                                        <td>{{currentPage.dst_port}}</td>
+                                        <td>{{currentPage.sequence}}</td>
+                                        <td>{{currentPage.ack_num}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table class="layui-table" v-if="raw_data.type == 'tcp'">
+                                    <thead>
+                                    <tr>
+                                        <th>数据</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{currentPage.data}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        </div>
+    </div>
+
+</div>
 </body>
 <script src="layui/layui.all.js"></script>
 <script src="js/vue.js"></script>
@@ -14,6 +177,55 @@ hi
 <script src="js/axios.js"></script>
 <script src="js/echarts.min.js"></script>
 <script type="application/javascript">
+    // 请求的地方设置成true
+    var index;
+    axios.interceptors.request.use(cfg => {
+        index = layer.load(0);
+        return cfg;
 
+    });
+    axios.interceptors.response.use(cfg => {
+        layer.close(index);
+        return cfg;
+
+    });
+    var host = "http://localhost:8080"
+    var app = new Vue({
+        el: '#app',
+        data: {
+            raw_data: "请选择",
+            eth_data: "请选择",
+            ip_data: "请选择",
+            transfer_data: "请选择",
+            conditions: {
+                dst_ip: "192.168.8.106",
+                dst_port: "",
+                protocol: ""
+            },
+            list:[],//数据包列表
+            currentPage:{datalink:""}
+        },
+        methods: {
+            find: () => {
+                app.list = [];
+                axios.post(host + "/network/findByCd", app.conditions).then(res => {
+                    for(let i = 0; i < res.data.length; i++){
+                        app.list.push(JSON.parse(res.data[i]));
+                    }
+                })
+
+            },
+            show:index =>{
+                //初始化数据
+                app.currentPage = app.list[index];
+
+            }
+        }
+    });
+    //获取屏幕
+    // setInterval(()=> {
+    //     $("#view-img").attr('src','http://localhost:8080/images/pV.jpg?'+Math.random());
+    //     console.log("refalsh.,....")
+    // },3000);
 </script>
 </html>

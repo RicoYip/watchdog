@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>开始使用layui</title>
+    <title>流量分析</title>
     <link rel="stylesheet" href="layui/css/layui.css">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/network.css">
 
 </head>
 <body>
@@ -13,14 +13,6 @@
 <div class="layui-fluid" id="app">
     <div class="layui-row left-area">
         <div class="layui-col-md4">
-            <fieldset class="layui-elem-field">
-                <legend>远程实时</legend>
-                <div class="layui-field-box">
-                    <div class="view-show">
-                        <img src="" alt="" width="100%" height="100%" id="view-img">
-                    </div>
-                </div>
-            </fieldset>
             <fieldset class="layui-elem-field">
                 <legend>网卡接受数据包情况</legend>
                 <div class="layui-field-box">
@@ -163,11 +155,6 @@
                         </div>
                     </div>
                 </fieldset>
-                <fieldset class="layui-elem-field">
-                    <legend>控制面板</legend>
-                    <div class="layui-field-box">
-                    </div>
-                </fieldset>
             </div>
         </div>
     </div>
@@ -185,7 +172,6 @@
     var transfer_data = "请选择";
     var all_bottom = true;
     var vm = new Vue({
-
         el: '#app',
         data: {
             list:[]
@@ -215,7 +201,7 @@
             }
         }
     })
-
+    //--------------------------网卡速率图标展示--------------------------
     var myChart = echarts.init(document.getElementById('view-show'));
     var option = {
         xAxis: {
@@ -230,10 +216,8 @@
             hoverAnimation: false,
         }]
     };
-
-    //获取数据包
-    setInterval(vm.send,1000);
-
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
     setInterval(()=>{
         axios.get("http://localhost:8080/network/getspeed")
             .then(res=> {
@@ -252,13 +236,11 @@
             }
         )
     },1000);
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
+    //--------------------------------------------------------
+    //获取数据包
+    setInterval(vm.send,1000);
 
-    setInterval(()=> {
-        $("#view-img").attr('src','http://localhost:8080/images/pV.jpg?'+Math.random());
-        console.log("refalsh.,....")
-    },3000);
+
 </script>
 </body>
 </html>
