@@ -2,144 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>流量分析</title>
+    <title>Title</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/screen.css">
 </head>
 <body>
-<div class="layui-fluid" id="app">
 
-    <div class="top">
-        <div class="layui-row layui-col-space10">
-            <div class="layui-col-md4">
-                <label>IP地址</label>
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+<div class="layui-fluid" id="app">
+    <div class="layui-row">
+        <div class="layui-col-md8">
+            <div class="screen">
+                <img src="" alt="" id="view-img">
             </div>
-            <div class="layui-col-md4">
-                <label>端口号</label>
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            <div class="cmd">
+                <div class="top">
+                    <textarea name=""  v-model="history" style="height: 200px;width: 100%"></textarea>
+                </div>
+                <div class="down">
+                    <input type="text" class="layui-input" v-model="cmd.cmd">
+                    <button type="button" class="layui-btn" @click="send()">发送</button>
+                </div>
             </div>
-            <div class="layui-col-md4">
-                <label>协议</label>
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-col-md4">
+            <div class="result">
+                <textarea name="" id="" v-model="res" style="height: 700px;width: 100%"></textarea>
             </div>
         </div>
     </div>
-    <div class="down">
-        <fieldset class="layui-elem-field">
-            <legend>数据包详情</legend>
-            <div class="layui-field-box">
-                <div class="paket-detail">
-                    <div class="layui-tab">
-                        <ul class="layui-tab-title">
-                            <li class="layui-this">原始数据</li>
-                            <li>链路层</li>
-                            <li>网络层</li>
-                            <li>传输层</li>
-                            <li>应用层</li>
-                        </ul>
-                        <div class="layui-tab-content">
-                            <div class="layui-tab-item layui-show">{{raw_data}}</div>
-                            <div class="layui-tab-item">
-                                <table class="layui-table">
-                                    <colgroup>
-                                        <col width="150">
-                                        <col width="200">
-                                        <col>
-                                    </colgroup>
-                                    <thead>
-                                    <tr>
-                                        <th>原MAC地址</th>
-                                        <th>目的MAC地址</th>
-                                        <th>类型</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>{{eth_data.destinationAddress}}</td>
-                                        <td>{{eth_data.sourceAddress}}</td>
-                                        <td>{{eth_data.frametype}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div class="layui-tab-item">
-                                <table class="layui-table">
-                                    <colgroup>
-                                        <col>
-                                        <col>
-                                        <col>
-                                    </colgroup>
-                                    <thead>
-                                    <tr>
-                                        <th>版本号</th>
-                                        <th>TOS</th>
-                                        <th>总长度</th>
-                                        <th>TTL</th>
-                                        <th>协议</th>
-                                        <th>源地址</th>
-                                        <th>目的地址</th>
-                                        <th>偏移</th>
-                                        <th>选项</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>{{ip_data.version}}</td>
-                                        <td>{{ip_data.rsv_tos}}</td>
-                                        <td>{{ip_data.length}}</td>
-                                        <td>{{ip_data.hop_limit}}</td>
-                                        <td>{{ip_data.protocol}}</td>
-                                        <td>{{ip_data.src_ip}}</td>
-                                        <td>{{ip_data.dst_ip}}</td>
-                                        <td>{{ip_data.offset}}</td>
-                                        <td>{{ip_data.option}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="layui-tab-item">
-                                <table class="layui-table" v-if="raw_data.type == 'tcp'">
-                                    <thead>
-                                    <tr>
-                                        <th>源端口</th>
-                                        <th>目的端口</th>
-                                        <th>数据序号</th>
-                                        <th>确认序号</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>{{transfer_data.src_port}}</td>
-                                        <td>{{transfer_data.dst_port}}</td>
-                                        <td>{{transfer_data.sequence}}</td>
-                                        <td>{{transfer_data.ack_num}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="layui-tab-item">
-                                <table class="layui-table" v-if="raw_data.type == 'tcp'">
-                                    <thead>
-                                    <tr>
-                                        <th>数据</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>{{transfer_data.data}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-    </div>
-
 </div>
+
 </body>
 <script src="layui/layui.all.js"></script>
 <script src="js/vue.js"></script>
@@ -147,13 +39,36 @@
 <script src="js/axios.js"></script>
 <script src="js/echarts.min.js"></script>
 <script type="application/javascript">
-    var vue = new Vue({
-       el : '#app'
-    });
     //获取屏幕
-    setInterval(()=> {
-        $("#view-img").attr('src','http://localhost:8080/images/pV.jpg?'+Math.random());
+    setInterval(() => {
+        $("#view-img").attr('src', 'http://localhost:8080/images/pV.jpg?' + Math.random());
         console.log("refalsh.,....")
-    },3000);
+    }, 3000);
+
+    var host = "http://localhost:8080"
+    var app = new Vue({
+       el:"#app",
+       data:{
+           history:"",
+           cmd:{cmd:""},
+           res:""
+       },
+       methods:{
+           send : ()=>{
+               app.history += app.cmd.cmd + "\n";
+               axios.post("http://localhost:8080/control/cmd",app.cmd).then(res=>{
+                   app.res += res.data.msg;
+               })
+           }
+       }
+    });
+    setInterval(() => {
+        axios.get("http://localhost:8080/control/cmdres").then(res=>{
+            let ans = res.data.data;
+            if(ans != undefined){
+                app.res += ans +"\n";
+            }
+        })
+    }, 1000);
 </script>
 </html>

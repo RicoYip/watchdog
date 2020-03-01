@@ -8,17 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import watcher.utils.MyUtils;
+import watcher.utils.OperatorServer;
 import watcher.vo.CommonPacket;
 import watcher.vo.Result;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 
 
 @CrossOrigin
 @RestController
 @RequestMapping("/network")
-public class NetworkController {
+public class PackageController {
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -100,4 +102,6 @@ public class NetworkController {
         }
         return JSON.toJSONString(res);
     }
+
+
 }

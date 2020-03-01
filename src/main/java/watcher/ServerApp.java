@@ -1,10 +1,12 @@
 package watcher;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import sun.nio.ch.IOUtil;
 import watcher.utils.MyUtils;
+import watcher.utils.OperatorServer;
 
 import javax.imageio.ImageIO;
 import java.io.*;
@@ -55,20 +57,7 @@ public class ServerApp {
                 e.printStackTrace();
             }
         }).start();
-//        //发送数据给客户端
-//        new Thread(()->{
-//
-//            try {
-//                Socket socket = new Socket("localhost",7878);
-//                OutputStream outputStream = socket.getOutputStream();
-//                IOUtils.copy(fis, outputStream);
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//        }).start();
         SpringApplication.run(ServerApp.class).start();
     }
+
 }
